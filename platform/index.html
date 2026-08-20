@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AICB Learning Platform — VinUniversity 2026</title>
+  <meta name="description" content="Nền tảng học AI tích hợp — Tóm tắt, Quiz, Tự luận, Flashcard cho AICB VinUniversity">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+
+<!-- ═══════════ ICON SPRITE ═══════════ -->
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5L16.5 16.5"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M3 7h9M17 7h4M3 17h4M12 17h9"/><circle cx="14.5" cy="7" r="2.5"/><circle cx="9.5" cy="17" r="2.5"/></symbol>
+  <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-fit" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+  <symbol id="i-focus" viewBox="0 0 24 24"><path d="M9 3v6H3M21 9h-6V3M15 21v-6h6M3 15h6v6"/></symbol>
+  <symbol id="i-open" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14L21 3M21 14v5a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h5"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9L11 3z"/><path d="M18.5 15l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-2.6-6.4M21 3.5V9h-5.5"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></symbol>
+  <symbol id="i-message" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9.5 18h5M10.5 21.5h3M12 2.5a6.5 6.5 0 00-3.8 11.8V17h7.6v-2.7A6.5 6.5 0 0012 2.5z"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 9.5v4M12 17.2h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16.5V11M12 7.8h.01"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M6.5 4.5l13 7.5-13 7.5v-15z"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 2.5l9.5 5-9.5 5-9.5-5 9.5-5zM2.5 12.5l9.5 5 9.5-5M2.5 17.5l9.5 5 9.5-5"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2.5H6.5a2 2 0 00-2 2v15a2 2 0 002 2h11a2 2 0 002-2V8L14 2.5z"/><path d="M14 2.5V8h5.5M8.5 13.5h7M8.5 17.5h7"/></symbol>
+  <symbol id="i-clipboard" viewBox="0 0 24 24"><path d="M9 4.5H7.5a2 2 0 00-2 2v13a2 2 0 002 2h9a2 2 0 002-2v-13a2 2 0 00-2-2H15"/><rect x="9" y="2.5" width="6" height="4" rx="1"/><path d="M9 13.5l2 2 4-4"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12.5 20.5H21M16.6 3.4a2.1 2.1 0 013 3L7.5 18.5l-4 1 1-4L16.6 3.4z"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3.5v11M7.5 10l4.5 4.5 4.5-4.5M4.5 20.5h15"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24"><path d="M12 2.5v4"/><rect x="3.5" y="6.5" width="17" height="13" rx="3.5"/><path d="M9 12.5h.01M15 12.5h.01M9.5 16h5"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.8"/><path d="M4.5 21v-1a5.5 5.5 0 015.5-5.5h4a5.5 5.5 0 015.5 5.5v1"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h12M9 12h12M9 18h12M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.3l3.3 2"/></symbol>
+</svg>
+
+<div id="app">
+
+<!-- ═══════════ NAVBAR ═══════════ -->
+<nav id="navbar">
+  <div class="nav-left">
+    <button class="icon-btn" id="sb-toggle" title="Ẩn/hiện danh sách bài học" aria-label="Danh sách bài học">
+      <svg class="ico"><use href="#i-menu"/></svg>
+    </button>
+    <a class="logo" href="#">
+      <div class="logo-mark">A</div>
+      <span class="logo-text">AICB</span>
+      <span class="logo-chip">VinUni</span>
+    </a>
+  </div>
+
+  <div class="nav-center">
+    <div class="track-tabs" role="tablist">
+      <button class="track-tab active" data-track="phase1">Phase 1</button>
+      <button class="track-tab" data-track="track2">Track 2</button>
+      <button class="track-tab" data-track="track3">Track 3</button>
+    </div>
+  </div>
+
+  <div class="nav-right">
+    <div class="nav-progress">
+      <span class="nav-prog-text" id="prog-text">0/21 bài</span>
+      <div class="nav-prog-bar"><div class="nav-prog-fill" id="prog-fill"></div></div>
+    </div>
+    <button class="icon-btn active" id="panel-toggle" title="Ẩn/hiện bảng học tập AI" aria-label="Bảng AI">
+      <svg class="ico"><use href="#i-panel"/></svg>
+    </button>
+    <button class="icon-btn" id="settings-open-btn" title="Cài đặt" aria-label="Cài đặt">
+      <svg class="ico"><use href="#i-settings"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<div id="main">
+
+  <!-- ── SIDEBAR ── -->
+  <aside id="sidebar">
+    <div class="sb-search">
+      <div class="sb-search-wrap">
+        <svg class="ico ico-sm"><use href="#i-search"/></svg>
+        <input type="text" id="sb-search" placeholder="Tìm bài học…" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="sb-list" id="sb-list"></div>
+
+    <div class="sb-footer">
+      <div class="sb-stats">
+        <div class="stat-card">
+          <div class="stat-num" id="stat-done">0</div>
+          <div class="stat-lbl">Hoàn thành</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="stat-score">—</div>
+          <div class="stat-lbl">Điểm TB</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="stat-total">21</div>
+          <div class="stat-lbl">Tổng bài</div>
+        </div>
+      </div>
+      <div class="sb-prog-bar"><div class="sb-prog-fill" id="sb-prog-fill"></div></div>
+    </div>
+  </aside>
+
+  <!-- ── VIEWER ── -->
+  <main id="viewer">
+    <div id="viewer-toolbar">
+      <div class="vt-left">
+        <div class="vt-title" id="vt-title">Chọn bài học để bắt đầu</div>
+        <div class="vt-sub" id="vt-sub">AICB Learning Platform</div>
+      </div>
+
+      <div class="vt-center">
+        <button class="vt-btn" id="pdf-prev" title="Trang trước" disabled><svg class="ico"><use href="#i-chevron-left"/></svg></button>
+        <div class="vt-page">
+          <input type="number" id="pdf-pg" value="1" min="1" aria-label="Số trang">
+          <span>/</span><span id="pdf-total">—</span>
+        </div>
+        <button class="vt-btn" id="pdf-next" title="Trang sau" disabled><svg class="ico"><use href="#i-chevron-right"/></svg></button>
+
+        <div class="vt-sep"></div>
+
+        <button class="vt-btn" id="zoom-out" title="Thu nhỏ"><svg class="ico"><use href="#i-minus"/></svg></button>
+        <span class="vt-zoom" id="zoom-lbl">100%</span>
+        <button class="vt-btn" id="zoom-in" title="Phóng to"><svg class="ico"><use href="#i-plus"/></svg></button>
+        <button class="vt-btn on" id="zoom-fit" title="Vừa khung hình"><svg class="ico"><use href="#i-fit"/></svg></button>
+        <button class="vt-btn" id="focus-btn" title="Chế độ tập trung — ẩn hai cột bên để slide rộng nhất"><svg class="ico"><use href="#i-focus"/></svg></button>
+        <button class="vt-btn" id="present-btn" title="Trình chiếu toàn màn hình (phím F)"><svg class="ico"><use href="#i-expand"/></svg></button>
+      </div>
+
+      <div class="vt-right">
+        <button id="mark-done-btn" class="btn btn-secondary hidden">
+          <svg class="ico ico-sm"><use href="#i-check"/></svg><span id="mark-done-lbl">Đánh dấu xong</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Slide stage -->
+    <div id="viewer-stage" style="display:none">
+      <canvas id="pdf-canvas"></canvas>
+    </div>
+
+    <!-- PPTX fallback -->
+    <div id="pptx-viewer">
+      <div class="pptx-card">
+        <div class="ph-mark" style="margin:0 auto 16px"><svg class="ico ico-lg"><use href="#i-file"/></svg></div>
+        <h2 id="pptx-title">Bài giảng PowerPoint</h2>
+        <p>Trình duyệt không hiển thị trực tiếp file <code>.pptx</code>. Bạn vẫn dùng được đầy đủ Tóm tắt, Quiz, Tự luận và Flashcard cho bài này.</p>
+        <div class="pptx-note">Để xem slide trong nền tảng: mở file bằng PowerPoint hoặc Google Slides rồi export sang PDF, đặt vào thư mục bài giảng.</div>
+        <a class="btn btn-secondary" id="pptx-dl" href="#" download>
+          <svg class="ico ico-sm"><use href="#i-download"/></svg>Tải file PPTX
+        </a>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="viewer-loading">
+      <div class="spin-wrap">
+        <div class="spinner"></div>
+        <div class="spin-text" id="spin-text">Đang tải slide…</div>
+      </div>
+    </div>
+
+    <!-- Placeholder -->
+    <div id="viewer-placeholder">
+      <div class="ph-mark"><svg class="ico ico-lg"><use href="#i-book"/></svg></div>
+      <div class="ph-title">AICB Learning Platform</div>
+      <div class="ph-sub">Chọn một bài học ở danh sách bên trái để xem slide và học cùng trợ lý AI.</div>
+      <div class="ph-tags">
+        <span class="ph-tag">Phase 1 · 13 bài</span>
+        <span class="ph-tag">Track 2 · 4 bài</span>
+        <span class="ph-tag">Track 3 · 4 bài</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- ── AI PANEL ── -->
+  <aside id="ai-panel">
+    <div class="panel-tabs" role="tablist">
+      <button class="panel-tab active" data-tab="summary">Tóm tắt</button>
+      <button class="panel-tab" data-tab="quiz">Quiz</button>
+      <button class="panel-tab" data-tab="scenario">Tự luận</button>
+      <button class="panel-tab" data-tab="flashcard">Flashcard</button>
+      <button class="panel-tab" data-tab="code">Code</button>
+    </div>
+
+    <!-- ── Summary ── -->
+    <div class="tab-pane active" id="tab-summary">
+      <div class="tab-scroll">
+        <div class="p-header">
+          <div class="p-title" id="s-title">Chọn bài học</div>
+          <div class="p-sub" id="s-sub">Trợ lý AI sẽ tóm tắt nội dung cho bạn</div>
+        </div>
+
+        <div class="field-row">
+          <label class="field-lbl">Mức độ chi tiết</label>
+          <div class="seg" id="detail-seg">
+            <button class="active" data-lv="simple">Đơn giản</button>
+            <button data-lv="standard">Chuẩn</button>
+            <button data-lv="deep">Chuyên sâu</button>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="gen-summary-btn" disabled>
+          <svg class="ico ico-sm"><use href="#i-sparkle"/></svg>Tóm tắt bằng AI
+        </button>
+
+        <div class="thinking off" id="summary-thinking" style="margin-top:14px">
+          <div class="spinner"></div> AI đang phân tích bài học…
+        </div>
+
+        <div class="field-row hidden" id="summary-hist-nav" style="margin-top:14px">
+          <label class="field-lbl">Bản tóm tắt đã lưu</label>
+          <select class="select" id="summary-hist-select"></select>
+        </div>
+
+        <div id="summary-area" style="margin-top:14px">
+          <div class="empty">
+            <svg class="ico"><use href="#i-file"/></svg>
+            <p>Chọn bài học rồi nhấn “Tóm tắt bằng AI” để nhận bản tóm tắt có cấu trúc.</p>
+          </div>
+        </div>
+
+        <div class="chips hidden" id="topics-row"></div>
+      </div>
+    </div>
+
+    <!-- ── Quiz ── -->
+    <div class="tab-pane" id="tab-quiz">
+      <div class="tab-scroll">
+        <div class="p-section-lbl">Trắc nghiệm</div>
+        <p class="p-desc">AI sinh 10 câu hỏi mới, không trùng với các lần trước. Bài làm mở ở chế độ toàn trang.</p>
+
+        <button class="btn btn-primary btn-block" id="gen-quiz-btn" disabled>
+          <svg class="ico ico-sm"><use href="#i-sparkle"/></svg>Sinh 10 câu trắc nghiệm
+        </button>
+
+        <div class="thinking off" id="quiz-thinking" style="margin-top:14px">
+          <div class="spinner"></div> AI đang soạn câu hỏi…
+        </div>
+
+        <div class="field-row hidden" id="quiz-hist-nav" style="margin-top:14px">
+          <label class="field-lbl">Lịch sử làm bài</label>
+          <select class="select" id="quiz-hist-select"></select>
+        </div>
+
+        <div class="result-card hidden" id="quiz-result">
+          <div>
+            <div class="result-lbl">Kết quả gần nhất</div>
+            <div class="result-txt" id="quiz-result-txt">—</div>
+          </div>
+          <div class="result-val" id="quiz-result-val">—</div>
+        </div>
+
+        <button class="btn btn-secondary btn-block hidden" id="quiz-open-btn" style="margin-top:6px">
+          <svg class="ico ico-sm"><use href="#i-open"/></svg>Mở bài toàn trang
+        </button>
+
+        <div id="quiz-empty" style="margin-top:14px">
+          <div class="empty">
+            <svg class="ico"><use href="#i-clipboard"/></svg>
+            <p>Chưa có bài trắc nghiệm nào cho bài học này.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Scenario ── -->
+    <div class="tab-pane" id="tab-scenario">
+      <div class="tab-scroll">
+        <div class="p-section-lbl">Tự luận tình huống</div>
+        <p class="p-desc">AI tạo tình huống thực tế để bạn phân tích, sau đó chấm và nhận xét chi tiết. Bài làm mở ở chế độ toàn trang.</p>
+
+        <button class="btn btn-primary btn-block" id="gen-scenario-btn" disabled>
+          <svg class="ico ico-sm"><use href="#i-sparkle"/></svg>Tạo tình huống tự luận
+        </button>
+
+        <div class="thinking off" id="scenario-thinking" style="margin-top:14px">
+          <div class="spinner"></div> AI đang thiết kế tình huống…
+        </div>
+
+        <div class="field-row hidden" id="scenario-hist-nav" style="margin-top:14px">
+          <label class="field-lbl">Lịch sử làm bài</label>
+          <select class="select" id="scenario-hist-select"></select>
+        </div>
+
+        <div class="result-card hidden" id="scenario-result">
+          <div>
+            <div class="result-lbl">Trạng thái</div>
+            <div class="result-txt" id="scenario-result-txt">—</div>
+          </div>
+          <svg class="ico ico-lg" style="color:var(--success)"><use href="#i-check-circle"/></svg>
+        </div>
+
+        <button class="btn btn-secondary btn-block hidden" id="scenario-open-btn" style="margin-top:6px">
+          <svg class="ico ico-sm"><use href="#i-open"/></svg>Mở bài toàn trang
+        </button>
+
+        <div id="scenario-empty" style="margin-top:14px">
+          <div class="empty">
+            <svg class="ico"><use href="#i-pen"/></svg>
+            <p>Chưa có bài tự luận nào cho bài học này.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Flashcard ── -->
+    <div class="tab-pane" id="tab-flashcard">
+      <div class="tab-scroll">
+        <div class="p-section-lbl">Thẻ ghi nhớ</div>
+        <p class="p-desc">AI trích xuất thuật ngữ quan trọng thành bộ thẻ. Phiên học mở ở chế độ toàn trang.</p>
+
+        <button class="btn btn-primary btn-block" id="gen-flashcard-btn" disabled>
+          <svg class="ico ico-sm"><use href="#i-sparkle"/></svg>Tạo bộ thẻ ghi nhớ
+        </button>
+
+        <div class="thinking off" id="flashcard-thinking" style="margin-top:14px">
+          <div class="spinner"></div> AI đang trích xuất thuật ngữ…
+        </div>
+
+        <div class="result-card hidden" id="flashcard-result">
+          <div>
+            <div class="result-lbl">Bộ thẻ đã lưu</div>
+            <div class="result-txt" id="flashcard-result-txt">—</div>
+          </div>
+          <svg class="ico ico-lg" style="color:var(--text-3)"><use href="#i-layers"/></svg>
+        </div>
+
+        <button class="btn btn-secondary btn-block hidden" id="flashcard-open-btn" style="margin-top:6px">
+          <svg class="ico ico-sm"><use href="#i-open"/></svg>Học toàn trang
+        </button>
+
+        <div id="flashcard-empty" style="margin-top:14px">
+          <div class="empty">
+            <svg class="ico"><use href="#i-layers"/></svg>
+            <p>Chưa có bộ thẻ nào cho bài học này.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Code ── -->
+    <div class="tab-pane" id="tab-code">
+      <div class="tab-scroll">
+        <div class="p-section-lbl">Bài tập lập trình</div>
+        <p class="p-desc">AI ra đề theo nội dung bài học, bạn viết code và nhận nhận xét. Trình soạn thảo mở ở chế độ toàn trang.</p>
+
+        <button class="btn btn-primary btn-block" id="gen-code-btn" disabled>
+          <svg class="ico ico-sm"><use href="#i-sparkle"/></svg>Tạo bài tập code
+        </button>
+
+        <div class="thinking off" id="code-thinking" style="margin-top:14px">
+          <div class="spinner"></div> AI đang ra đề…
+        </div>
+
+        <div class="result-card hidden" id="code-result">
+          <div>
+            <div class="result-lbl">Đề bài hiện tại</div>
+            <div class="result-txt" id="code-result-txt">—</div>
+          </div>
+          <svg class="ico ico-lg" style="color:var(--text-3)"><use href="#i-code"/></svg>
+        </div>
+
+        <button class="btn btn-secondary btn-block hidden" id="code-open-btn" style="margin-top:6px">
+          <svg class="ico ico-sm"><use href="#i-open"/></svg>Mở trình soạn thảo
+        </button>
+
+        <div id="code-empty" style="margin-top:14px">
+          <div class="empty">
+            <svg class="ico"><use href="#i-code"/></svg>
+            <p>Chưa có bài tập code nào cho bài học này.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div><!-- /#main -->
+</div><!-- /#app -->
+
+<!-- ═══════════ FULL-PAGE WORK MODE ═══════════ -->
+<div id="exercise-view">
+  <div class="ev-topbar">
+    <button class="btn btn-secondary" id="ev-back-btn">
+      <svg class="ico ico-sm"><use href="#i-arrow-left"/></svg>Quay lại bài giảng
+    </button>
+    <div class="ev-heading">
+      <div class="ev-title" id="ev-title">Chế độ làm bài</div>
+      <div class="ev-sub" id="ev-sub"></div>
+    </div>
+    <div class="ev-actions" id="ev-actions"></div>
+  </div>
+  <div class="ev-body" id="ev-body">
+    <div class="ev-wrap" id="ev-content"></div>
+  </div>
+  <div class="ev-footer hidden" id="ev-footer"></div>
+</div>
+
+<!-- ═══════════ CHATBOT ═══════════ -->
+<button id="chatbot-fab" title="Trợ lý AICB" aria-label="Mở trợ lý AI">
+  <svg class="ico"><use href="#i-message"/></svg>
+</button>
+
+<div id="chatbot-win">
+  <div class="cb-header">
+    <div class="cb-id">
+      <div class="cb-avatar"><svg class="ico"><use href="#i-bot"/></svg></div>
+      <div>
+        <div class="cb-name">Trợ lý AICB</div>
+        <div class="cb-status">Sẵn sàng</div>
+      </div>
+    </div>
+    <button class="icon-btn" id="cb-close" aria-label="Đóng"><svg class="ico"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="cb-ctx" id="cb-ctx">Chọn bài học để trợ lý hỗ trợ đúng ngữ cảnh</div>
+  <div class="cb-msgs" id="cb-msgs">
+    <div class="cb-msg">
+      <div class="cb-msg-av"><svg class="ico"><use href="#i-bot"/></svg></div>
+      <div class="cb-bubble">
+        Xin chào! Tôi là trợ lý học tập của khóa AICB.<br><br>
+        Tôi có thể giải thích khái niệm khó, trả lời câu hỏi về bài học, hỗ trợ debug code và gợi ý tài liệu đọc thêm.<br><br>
+        Hãy chọn một bài học rồi hỏi tôi bất cứ điều gì.
+      </div>
+    </div>
+  </div>
+  <div class="cb-sugg" id="cb-sugg">
+    <button class="cb-sugg-chip" data-q="LLM là gì?">LLM là gì?</button>
+    <button class="cb-sugg-chip" data-q="RAG khác fine-tuning thế nào?">RAG vs Fine-tuning</button>
+    <button class="cb-sugg-chip" data-q="ReAct pattern là gì?">ReAct pattern</button>
+  </div>
+  <div class="cb-input-row">
+    <textarea id="cb-input" rows="1" placeholder="Hỏi về bài học, code…"></textarea>
+    <button id="cb-send" aria-label="Gửi"><svg class="ico ico-sm"><use href="#i-send"/></svg></button>
+  </div>
+</div>
+
+<!-- ═══════════ SETTINGS ═══════════ -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal">
+    <div class="modal-hd">
+      <h2>Cài đặt API</h2>
+      <button class="icon-btn" id="settings-close-btn" aria-label="Đóng"><svg class="ico"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <label class="modal-label" for="api-key-inp">API Key</label>
+        <input type="password" class="input mono" id="api-key-inp" placeholder="sk-…">
+        <div class="modal-help">
+          Hỗ trợ mọi endpoint tương thích OpenAI. Key chỉ lưu trên máy bạn (localStorage), không gửi đi đâu khác ngoài Base URL bên dưới.
+        </div>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label" for="base-url-inp">Base URL</label>
+        <input type="text" class="input mono" id="base-url-inp" placeholder="https://api.openai.com/v1">
+        <div class="modal-help">Ví dụ: <code>https://api.openai.com/v1</code> · <code>https://api.shopaikey.com/v1</code></div>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label" for="model-sel">Model</label>
+        <select class="input" id="model-sel">
+          <option value="gpt-4o-mini">gpt-4o-mini — nhanh, chi phí thấp</option>
+          <option value="gpt-4o">gpt-4o — chất lượng cao hơn</option>
+          <option value="gpt-4-turbo">gpt-4-turbo</option>
+          <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label" for="lang-sel">Ngôn ngữ phản hồi</label>
+        <select class="input" id="lang-sel">
+          <option value="mixed">Tiếng Việt, giữ thuật ngữ tiếng Anh (khuyến nghị)</option>
+          <option value="vi">Tiếng Việt thuần</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" id="settings-save-btn">Lưu cài đặt</button>
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
+<script src="js/pdfViewer.js"></script>
+<script src="js/aiEngine.js"></script>
+<script src="js/quizEngine.js"></script>
+<script src="js/scenarioEngine.js"></script>
+<script src="js/flashcardEngine.js"></script>
+<script src="js/chatbot.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
