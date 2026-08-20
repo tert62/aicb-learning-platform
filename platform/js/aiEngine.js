@@ -48,12 +48,12 @@ const AIEngine = (() => {
     return App.clean(data.choices?.[0]?.message?.content || '');
   }
 
-  /** Gọi AI với một prompt đơn. */
-  function callAI(prompt, systemPrompt = '') {
+  /** Gọi AI với một prompt đơn. opts: { temperature, maxTokens } */
+  function callAI(prompt, systemPrompt = '', opts) {
     const messages = [];
     if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
     messages.push({ role: 'user', content: prompt });
-    return chat(messages);
+    return chat(messages, opts);
   }
 
   // ─── Markdown ────────────────────────────────────────────

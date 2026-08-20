@@ -251,10 +251,39 @@
     <div class="tab-pane" id="tab-quiz">
       <div class="tab-scroll">
         <div class="p-section-lbl">Trắc nghiệm</div>
-        <p class="p-desc">AI sinh 10 câu hỏi mới, không trùng với các lần trước. Bài làm mở ở chế độ toàn trang.</p>
+        <p class="p-desc">AI ra đề mới mỗi lần và tự loại bỏ những câu đã hỏi ở các lần trước. Bài làm mở ở chế độ toàn trang.</p>
+
+        <div class="field-row">
+          <label class="field-lbl">Số câu</label>
+          <div class="seg" id="quiz-count-seg">
+            <button data-count="5">5</button>
+            <button class="active" data-count="10">10</button>
+            <button data-count="15">15</button>
+            <button data-count="20">20</button>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label class="field-lbl" for="quiz-difficulty">Độ khó</label>
+          <select class="select" id="quiz-difficulty">
+            <option value="mixed">Hỗn hợp — xếp theo độ khó tăng dần</option>
+            <option value="basic">Cơ bản — nắm chắc khái niệm</option>
+            <option value="applied">Vận dụng — áp dụng vào tình huống</option>
+            <option value="advanced">Nâng cao — phân tích, đánh đổi, edge case</option>
+          </select>
+        </div>
+
+        <div class="field-row">
+          <label class="field-lbl" for="quiz-style">Dạng câu hỏi</label>
+          <select class="select" id="quiz-style">
+            <option value="mixed">Cân bằng — có câu đọc code</option>
+            <option value="code">Thiên về code — đọc output, tìm lỗi</option>
+            <option value="theory">Thiên về lý thuyết</option>
+          </select>
+        </div>
 
         <button class="btn btn-primary btn-block" id="gen-quiz-btn" disabled>
-          <svg class="ico ico-sm"><use href="#i-sparkle"/></svg>Sinh 10 câu trắc nghiệm
+          <svg class="ico ico-sm"><use href="#i-sparkle"/></svg><span id="gen-quiz-lbl">Sinh 10 câu trắc nghiệm</span>
         </button>
 
         <div class="thinking off" id="quiz-thinking" style="margin-top:14px">

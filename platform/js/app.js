@@ -28,18 +28,25 @@ function icon(name, cls = '') {
 }
 // Ký tự emoji / pictograph — nền tảng dùng bộ icon SVG nên mọi emoji đều bị loại bỏ,
 // kể cả emoji do AI sinh ra hoặc còn sót trong dữ liệu đã lưu từ trước.
-const EMOJI_RE = /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{200D}\u{20E3}\u{2049}\u{203C}\u{2122}\u{2139}\u{24C2}\u{3030}\u{303D}\u{3297}\u{3299}]/gu;
+const EMOJI_CLASS = '[\\u{1F000}-\\u{1FAFF}\\u{2600}-\\u{27BF}\\u{2B00}-\\u{2BFF}\\u{FE00}-\\u{FE0F}\\u{200D}\\u{20E3}\\u{2049}\\u{203C}\\u{2122}\\u{2139}\\u{24C2}\\u{3030}\\u{303D}\\u{3297}\\u{3299}]';
+const EMOJI_RUN_RE = new RegExp(`([ \\t]*)(?:${EMOJI_CLASS})+([ \\t]*)`, 'gu');
 
-/** Bỏ emoji và dọn khoảng trắng thừa, giữ nguyên thụt lề của markdown. */
+/**
+ * Bỏ emoji cùng khoảng trắng thừa mà nó để lại.
+ * Chỉ đụng tới khoảng trắng NẰM SÁT emoji — thụt lề của code trong JSON do AI
+ * trả về được giữ nguyên tuyệt đối.
+ */
 function clean(s) {
-  return String(s ?? '')
-    .replace(EMOJI_RE, '')
-    .split('\n')
-    .map(line => {
-      const indent = line.match(/^[ \t]*/)[0];
-      return indent + line.slice(indent.length).replace(/[ \t]{2,}/g, ' ').replace(/[ \t]+$/, '');
+  const str = String(s ?? '');
+  return str
+    .replace(EMOJI_RUN_RE, (m, pre, post, off) => {
+      const before = str[off - 1];
+      const after  = str[off + m.length];
+      // emoji nằm giữa hai ký tự trên cùng một dòng -> thu về đúng một khoảng trắng
+      if (before && after && before !== '\n' && after !== '\n' && (pre || post)) return ' ';
+      return '';
     })
-    .join('\n');
+    .split('\n').map(l => l.replace(/[ \t]+$/, '')).join('\n');
 }
 
 function esc(s) {

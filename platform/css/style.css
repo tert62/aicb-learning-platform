@@ -611,6 +611,43 @@ code,pre,.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
   background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-sm);
   display:flex;align-items:center;justify-content:center;transition:var(--t-fast);
 }
+/* Nhãn độ khó + dạng câu hỏi */
+.q-tags{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.q-diff{
+  font-size:.6875rem;font-weight:600;padding:3px 9px;border-radius:20px;
+  background:var(--surface-2);color:var(--text-3);border:1px solid var(--border);
+  white-space:nowrap;
+}
+.q-diff.basic{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-border)}
+.q-diff.applied{background:#fff7ed;color:var(--warning);border-color:#fed7aa}
+.q-diff.advanced{background:#fdf2f8;color:#a21caf;border-color:#f5d0fe}
+
+/* Đoạn code trong câu hỏi */
+.q-code{
+  margin:0 0 18px;border-radius:var(--r-md);overflow:hidden;
+  background:#101828;border:1px solid #1d2939;
+}
+.q-code-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 14px;font-size:.6875rem;font-weight:600;letter-spacing:.05em;
+  color:#98a2b3;background:rgba(255,255,255,.035);border-bottom:1px solid rgba(255,255,255,.07);
+}
+.q-code pre{
+  margin:0;padding:16px 18px;overflow-x:auto;
+  font-family:'JetBrains Mono',monospace;font-size:.8125rem;line-height:1.7;
+  color:#e4e7ec;tab-size:4;
+}
+
+/* Code nội tuyến trong đề bài, phương án và giải thích */
+.q-text code,.q-opt code,.q-explain code{
+  font-family:'JetBrains Mono',monospace;font-size:.875em;
+  background:var(--surface-2);border:1px solid var(--border);
+  padding:1px 5px;border-radius:4px;
+}
+.q-opt.correct code{background:rgba(4,120,87,.08);border-color:var(--success-border)}
+.q-opt.wrong code{background:rgba(180,35,24,.07);border-color:var(--danger-border)}
+.q-opt-body{min-width:0;flex:1}
+
 .q-explain{
   margin-top:16px;padding:14px 18px;
   background:var(--surface-2);border:1px solid var(--border);
