@@ -36,7 +36,7 @@ const AIEngine = (() => {
     const resp = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-      body: JSON.stringify({ model: model || 'gpt-4o-mini', messages, temperature, max_tokens: maxTokens })
+      body: JSON.stringify({ model: model || 'gpt-5.6-luna', messages, temperature, max_tokens: maxTokens })
     });
 
     if (!resp.ok) {

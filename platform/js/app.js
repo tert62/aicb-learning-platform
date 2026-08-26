@@ -11,7 +11,7 @@ const SCORES_KEY   = 'aicb_scores_v2';
 let settings = {
   apiKey: '',
   baseUrl: 'https://api.shopaikey.com/v1',
-  model: 'gpt-4o-mini',
+  model: 'gpt-5.6-luna',
   lang: 'mixed',
   ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')
 };
@@ -369,7 +369,7 @@ function setupSettings() {
 
   if (apiInp)   apiInp.value   = settings.apiKey || '';
   if (urlInp)   urlInp.value   = settings.baseUrl || 'https://api.shopaikey.com/v1';
-  if (modelSel) modelSel.value = settings.model || 'gpt-4o-mini';
+  if (modelSel) modelSel.value = settings.model || 'gpt-5.6-luna';
   if (langSel)  langSel.value  = settings.lang || 'mixed';
 
   $('settings-open-btn')?.addEventListener('click', () => modal?.classList.add('open'));
@@ -379,7 +379,7 @@ function setupSettings() {
   $('settings-save-btn')?.addEventListener('click', () => {
     settings.apiKey  = apiInp?.value.trim() || '';
     settings.baseUrl = urlInp?.value.trim() || 'https://api.shopaikey.com/v1';
-    settings.model   = modelSel?.value || 'gpt-4o-mini';
+    settings.model   = modelSel?.value || 'gpt-5.6-luna';
     settings.lang    = langSel?.value || 'mixed';
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
     modal?.classList.remove('open');
