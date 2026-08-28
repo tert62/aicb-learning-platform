@@ -188,27 +188,18 @@ Trả về DUY NHẤT JSON đúng định dạng sau, không kèm bất kỳ ch�
     thinking?.classList.remove('off');
     setThinking(`AI đang soạn ${want} câu hỏi…`);
     histIndex = 0;
-
-    // Vân tay của mọi câu đã từng ra cho bài học này
-    const seen = new Set(pastQuestions(lesson.id).map(fingerprint));
-    const excludedText = pastQuestions(lesson.id).map(q => q.question).reverse();
-
     const collected = [];
     let dropped = 0;
 
     try {
-      // Tối đa 2 lượt: lượt 2 chỉ xin bù số câu còn thiếu sau khi lọc trùng
-      for (let attempt = 0; attempt < 2 && collected.length < want; attempt++) {
-        const need = want - collected.length;
-        if (attempt > 0) setThinking(`Đã lọc ${dropped} câu trùng — đang xin thêm ${need} câu mới…`);
-
-        const raw = await AIEngine.callAI(
-          buildPrompt(lesson, need, excludedText.concat(collected.map(q => q.question)), attempt),
-          'Bạn là giảng viên AICB ra đề trắc nghiệm chất lượng cao. Chỉ trả về JSON đúng định dạng, không giải thích thêm.',
-          { temperature: 0.95, maxTokens: Math.min(1200 + need * 420, 12000) }
-        );
-
-        for (const rawQ of parseQuestions(raw)) {
+      // Vân tay của mọi câu đã từng ra cho bài học này
+      const pastQs = pastQuestions(lesson.id).filter(Boolean);
+      const seen = new Set(pastQs.map(fingerprint));
+      const excludedText = pastQs.map(q => q.question).filter(Boolean).reverse();
+      if (lesson.id === 'd7' && window.DAY7_QUIZ) {
+        setThinking(`Đang tải đề trắc nghiệm lưu sẵn cho Day 7…`);
+        const qs = [...window.DAY7_QUIZ.questions].sort(() => Math.random() - 0.5);
+        for (const rawQ of qs) {
           const q = normalize(rawQ);
           if (!q) continue;
           const fp = fingerprint(q);
@@ -216,6 +207,28 @@ Trả về DUY NHẤT JSON đúng định dạng sau, không kèm bất kỳ ch�
           seen.add(fp);
           collected.push(q);
           if (collected.length >= want) break;
+        }
+      } else {
+        // Tối đa 2 lượt: lượt 2 chỉ xin bù số câu còn thiếu sau khi lọc trùng
+        for (let attempt = 0; attempt < 2 && collected.length < want; attempt++) {
+          const need = want - collected.length;
+          if (attempt > 0) setThinking(`Đã lọc ${dropped} câu trùng — đang xin thêm ${need} câu mới…`);
+
+          const raw = await AIEngine.callAI(
+            buildPrompt(lesson, need, excludedText.concat(collected.map(q => q.question)), attempt),
+            'Bạn là giảng viên AICB ra đề trắc nghiệm chất lượng cao. Chỉ trả về JSON đúng định dạng, không giải thích thêm.',
+            { temperature: 0.95, maxTokens: Math.min(1200 + need * 420, 12000) }
+          );
+
+          for (const rawQ of parseQuestions(raw)) {
+            const q = normalize(rawQ);
+            if (!q) continue;
+            const fp = fingerprint(q);
+            if (seen.has(fp)) { dropped++; continue; }
+            seen.add(fp);
+            collected.push(q);
+            if (collected.length >= want) break;
+          }
         }
       }
 
