@@ -117,12 +117,12 @@ QUY TẮC BẮT BUỘC:
    Code phải chạy được và liên quan trực tiếp tới chủ đề bài học.
 3. Các phương án nhiễu phải HỢP LÝ và sai một cách tinh vi — không được sai lộ liễu,
    không dùng "Tất cả đều đúng" hay "Không đáp án nào đúng".
-4. Mỗi câu kiểm tra một khía cạnh KHÁC NHAU. Không có hai câu cùng ý.
-5. "answer" là chỉ số 0-3 ứng với vị trí trong "options". Đáp án đúng phải phân bố đều
-   giữa các vị trí, không dồn vào một chỗ.
-6. "explanation" phải nói rõ vì sao đáp án đúng đúng VÀ vì sao các phương án còn lại sai.
-7. Bọc mọi định danh, giá trị hay đoạn code ngắn trong dấu backtick.
-8. Không dùng emoji ở bất kỳ đâu.
+4. TRÁNH LỖI ĐỘ DÀI: Đảm bảo độ dài của đáp án đúng tương đương với các phương án sai. TUYỆT ĐỐI không được để đáp án đúng luôn là đáp án dài nhất.
+5. Mỗi câu kiểm tra một khía cạnh KHÁC NHAU. Không có hai câu cùng ý.
+6. "answer" là chỉ số 0-3 ứng với vị trí trong "options". BẮT BUỘC TRỘN ĐÁP ÁN: Đáp án đúng phải phân bố đều và ngẫu nhiên giữa các vị trí A (0), B (1), C (2), D (3). TUYỆT ĐỐI KHÔNG để phần lớn đáp án đúng rơi vào vị trí A (0).
+7. "explanation" phải nói rõ vì sao đáp án đúng đúng VÀ vì sao các phương án còn lại sai.
+8. Bọc mọi định danh, giá trị hay đoạn code ngắn trong dấu backtick.
+9. Không dùng emoji ở bất kỳ đâu.
 
 Trả về DUY NHẤT JSON đúng định dạng sau, không kèm bất kỳ chữ nào khác:
 {
