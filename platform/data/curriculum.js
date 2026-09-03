@@ -207,6 +207,39 @@ const CURRICULUM = {
         topics: ['Vector Store', 'Feature Store', 'Pinecone', 'Feast', 'MLOps'],
         color: '#155e75',
         description: 'Vector databases (Pinecone, Weaviate, Qdrant), Feature Store với Feast, quản lý features trong ML lifecycle.'
+      },
+      {
+        id: 't2day20', day: 20,
+        title: 'Day 20',
+        subtitle: 'Track 2 - Day 20',
+        instructor: 'AICB Faculty',
+        file: '../Track2/Day20-Track2.pdf',
+        fileType: 'pdf',
+        topics: ['AI Infrastructure'],
+        color: '#0891b2',
+        description: 'Nội dung đang được cập nhật.'
+      },
+      {
+        id: 't2day21', day: 21,
+        title: 'Day 21',
+        subtitle: 'Track 2 - Day 21',
+        instructor: 'AICB Faculty',
+        file: '../Track2/Day 21-Track2.pptx',
+        fileType: 'pptx',
+        topics: ['AI Infrastructure'],
+        color: '#0891b2',
+        description: 'Nội dung đang được cập nhật.'
+      },
+      {
+        id: 't2day22', day: 22,
+        title: 'Day 22',
+        subtitle: 'Track 2 - Day 22',
+        instructor: 'AICB Faculty',
+        file: '../Track2/Day 22-Track2.pptx',
+        fileType: 'pptx',
+        topics: ['AI Infrastructure'],
+        color: '#0891b2',
+        description: 'Nội dung đang được cập nhật.'
       }
     ]
   },
@@ -262,6 +295,72 @@ const CURRICULUM = {
         topics: ['GraphRAG', 'Knowledge Graph', 'Neo4j', 'Entity Extraction', 'Graph Traversal'],
         color: '#be185d',
         description: 'Microsoft GraphRAG, xây dựng Knowledge Graph với Neo4j, entity/relation extraction, graph-based retrieval.'
+      },
+      {
+        id: 't3day20', day: 20,
+        title: 'Day 20',
+        subtitle: 'Track 3 - Day 20',
+        instructor: 'AICB Faculty',
+        file: '../Track3/Day20-Track3.pdf',
+        fileType: 'pdf',
+        topics: ['Advanced AI Agent'],
+        color: '#be185d',
+        description: 'Nội dung đang được cập nhật.'
+      },
+      {
+        id: 't3day21', day: 21,
+        title: 'Day 21',
+        subtitle: 'Track 3 - Day 21',
+        instructor: 'AICB Faculty',
+        file: '../Track3/Day21-Track3.pdf',
+        fileType: 'pdf',
+        topics: ['Advanced AI Agent'],
+        color: '#be185d',
+        description: 'Nội dung đang được cập nhật.'
+      },
+      {
+        id: 't3day22', day: 22,
+        title: 'Day 22',
+        subtitle: 'Track 3 - Day 22',
+        instructor: 'AICB Faculty',
+        file: '../Track3/Day22-Track3.pdf',
+        fileType: 'pdf',
+        topics: ['Advanced AI Agent'],
+        color: '#be185d',
+        description: 'Nội dung đang được cập nhật.'
+      },
+      {
+        id: 't3day23', day: 23,
+        title: 'Day 23',
+        subtitle: 'Track 3 - Day 23',
+        instructor: 'AICB Faculty',
+        file: '../Track3/Day23-Track3.pdf',
+        fileType: 'pdf',
+        topics: ['Advanced AI Agent'],
+        color: '#be185d',
+        description: 'Nội dung đang được cập nhật.'
+      },
+      {
+        id: 't3day24', day: 24,
+        title: 'Day 24',
+        subtitle: 'Track 3 - Day 24',
+        instructor: 'AICB Faculty',
+        file: '../Track3/Day24-Track3.pdf',
+        fileType: 'pdf',
+        topics: ['Advanced AI Agent'],
+        color: '#be185d',
+        description: 'Nội dung đang được cập nhật.'
+      },
+      {
+        id: 't3day27', day: 27,
+        title: 'Day 27',
+        subtitle: 'Track 3 - Day 27',
+        instructor: 'AICB Faculty',
+        file: '../Track3/Day27-Track3.pdf',
+        fileType: 'pdf',
+        topics: ['Advanced AI Agent'],
+        color: '#be185d',
+        description: 'Nội dung đang được cập nhật.'
       }
     ]
   }
