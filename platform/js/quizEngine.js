@@ -217,7 +217,7 @@ Trả về DUY NHẤT JSON đúng định dạng sau, không kèm bất kỳ ch�
           const raw = await AIEngine.callAI(
             buildPrompt(lesson, need, excludedText.concat(collected.map(q => q.question)), attempt),
             'Bạn là giảng viên AICB ra đề trắc nghiệm chất lượng cao. Chỉ trả về JSON đúng định dạng, không giải thích thêm.',
-            { temperature: 0.95, maxTokens: Math.min(1200 + need * 420, 12000) }
+            { temperature: 0.95, maxTokens: Math.min(1200 + need * 400, 4000) }
           );
 
           for (const rawQ of parseQuestions(raw)) {
