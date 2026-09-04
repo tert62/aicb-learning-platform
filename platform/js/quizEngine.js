@@ -36,8 +36,8 @@ Sắp xếp các câu theo độ khó TĂNG DẦN từ câu đầu đến câu c
 phần còn lại chia cho concept, compare, scenario và config.`,
     code: `PHÂN BỔ DẠNG CÂU HỎI: ít nhất 70% số câu phải có đoạn code trong trường "code"
 (chủ yếu code_output và code_debug), phần còn lại là config hoặc scenario.`,
-    theory: `PHÂN BỔ DẠNG CÂU HỎI: chủ yếu concept, compare và scenario.
-Vẫn phải có ít nhất 2 câu dạng code_output để kiểm tra khả năng đọc code.`
+    theory: `PHÂN BỔ DẠNG CÂU HỎI: CHỈ câu hỏi lý thuyết, gồm concept, compare, scenario và config.
+TUYỆT ĐỐI KHÔNG tạo code_output hoặc code_debug; không được có đoạn code, pseudo-code hay syntax lập trình trong question, options hoặc explanation. Trường "code" phải để chuỗi rỗng.`
   };
 
   // Mỗi lần sinh đề chọn ngẫu nhiên vài góc tiếp cận để đề không lặp mô-típ
@@ -205,6 +205,7 @@ Trả về DUY NHẤT JSON đúng định dạng sau, không kèm bất kỳ ch�
         for (const rawQ of qs) {
           const q = normalize(rawQ);
           if (!q) continue;
+          if (prefs.style === 'theory' && (q.code || /^code_/.test(q.type))) { dropped++; continue; }
           const fp = fingerprint(q);
           if (seen.has(fp)) { dropped++; continue; }
           seen.add(fp);
@@ -242,6 +243,7 @@ Trả về DUY NHẤT JSON đúng định dạng sau, không kèm bất kỳ ch�
           for (const rawQ of generated) {
             const q = normalize(rawQ);
             if (!q) continue;
+            if (prefs.style === 'theory' && (q.code || /^code_/.test(q.type))) { dropped++; continue; }
             const fp = fingerprint(q);
             if (seen.has(fp)) { dropped++; continue; }
             seen.add(fp);
