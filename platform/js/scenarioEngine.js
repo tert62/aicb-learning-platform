@@ -39,8 +39,10 @@ const ScenarioEngine = (() => {
       const exclude = past.length
         ? `\nCÁC TÌNH HUỐNG ĐÃ RA TRƯỚC ĐÓ (KHÔNG LẶP LẠI):\n${past.map(q => `- ${q}`).join('\n')}\n`
         : '';
+      const pdfText = window.PDFViewer && window.PDFViewer.hasPDF() ? await window.PDFViewer.extractText(40) : '';
 
       const prompt = `Tạo 2 bài tập tình huống thực tế (tự luận) hoàn toàn mới cho bài "${lesson.title}" (${lesson.topics.join(', ')}).${exclude}
+${pdfText ? `\n--- NỘI DUNG TỪ SLIDE ---\n${pdfText}\n-----------------------\n` : ''}
 
 Trả về JSON (CHỈ JSON):
 {

@@ -236,10 +236,28 @@ const PDFViewer = (() => {
     }
   }
 
+  // ─── Text Extraction ────────────────────────────────────
+  async function extractText(maxPages = 40) {
+    if (!pdfDoc) return '';
+    let text = '';
+    const numPages = Math.min(pdfDoc.numPages, maxPages);
+    for (let i = 1; i <= numPages; i++) {
+      try {
+        const page = await pdfDoc.getPage(i);
+        const content = await page.getTextContent();
+        const pageText = content.items.map(item => item.str).join(' ');
+        text += pageText + '\n\n';
+      } catch (e) {
+        console.warn('Cannot extract text from page', i, e);
+      }
+    }
+    return text.trim();
+  }
+
   setupEvents();
   showPlaceholder();
 
-  return { loadPDF, showPlaceholder, showPptx, rerender, hasPDF: () => !!pdfDoc };
+  return { loadPDF, showPlaceholder, showPptx, rerender, hasPDF: () => !!pdfDoc, extractText };
 })();
 
 window.PDFViewer = PDFViewer;

@@ -134,9 +134,18 @@ const AIEngine = (() => {
       deep:     'Chuyên sâu kỹ thuật đầy đủ, phù hợp người đã có nền tảng.'
     }[summaryLevel];
 
-    const prompt = `Bài học: **${lesson.title}** (Day ${lesson.day})
+    const btn = $('gen-summary-btn'), thinking = $('summary-thinking'), area = $('summary-area');
+    if (btn) btn.disabled = true;
+    thinking?.classList.remove('off');
+    if (area) area.innerHTML = '';
+
+    try {
+      const pdfText = window.PDFViewer && window.PDFViewer.hasPDF() ? await window.PDFViewer.extractText(40) : '';
+
+      const prompt = `Bài học: **${lesson.title}** (Day ${lesson.day})
 Chủ đề: ${lesson.topics.join(', ')}
 Mô tả: ${lesson.desc || ''}
+${pdfText ? `\n--- NỘI DUNG TỪ SLIDE ---\n${pdfText}\n-----------------------\n` : ''}
 
 ${levelInstr} ${langInstr}
 
@@ -156,12 +165,6 @@ Tóm tắt bài học theo cấu trúc markdown, KHÔNG dùng emoji:
 
 Tối đa 450 từ, súc tích và dễ đọc.`;
 
-    const btn = $('gen-summary-btn'), thinking = $('summary-thinking'), area = $('summary-area');
-    if (btn) btn.disabled = true;
-    thinking?.classList.remove('off');
-    if (area) area.innerHTML = '';
-
-    try {
       const text = await callAI(prompt, 'Bạn là trợ lý học tập của khóa AICB VinUniversity. Giải thích rõ ràng, có cấu trúc, không dùng emoji.');
       const history = addToHistory(lesson.id, summaryLevel, text);
       summaryIndex = 0;

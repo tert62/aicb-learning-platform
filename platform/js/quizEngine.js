@@ -89,7 +89,7 @@ Vẫn phải có ít nhất 2 câu dạng code_output để kiểm tra khả nă
   let histIndex = 0;
 
   // ─── Prompt ──────────────────────────────────────────────
-  function buildPrompt(lesson, need, excluded, attempt) {
+  function buildPrompt(lesson, need, excluded, attempt, pdfText) {
     const exclude = excluded.length
       ? `\nCÁC CÂU ĐÃ RA TRƯỚC ĐÓ — TUYỆT ĐỐI KHÔNG LẶP LẠI Ý CỦA BẤT KỲ CÂU NÀO:\n` +
         excluded.slice(0, 40).map((q, i) => `${i + 1}. ${q.slice(0, 110)}`).join('\n') + '\n'
@@ -101,6 +101,7 @@ Vẫn phải có ít nhất 2 câu dạng code_output để kiểm tra khả nă
     return `Tạo ${need} câu hỏi trắc nghiệm cho bài học "${lesson.title}".
 Chủ đề: ${lesson.topics.join(', ')}.
 Bối cảnh: ${lesson.desc || ''}
+${pdfText ? `\n--- NỘI DUNG TỪ SLIDE ---\n${pdfText}\n-----------------------\n` : ''}
 
 ${DIFF_INSTR[prefs.difficulty] || DIFF_INSTR.mixed}
 
@@ -196,6 +197,8 @@ Trả về DUY NHẤT JSON đúng định dạng sau, không kèm bất kỳ ch�
       const pastQs = pastQuestions(lesson.id).filter(Boolean);
       const seen = new Set(pastQs.map(fingerprint));
       const excludedText = pastQs.map(q => q.question).filter(Boolean).reverse();
+      const pdfText = window.PDFViewer && window.PDFViewer.hasPDF() ? await window.PDFViewer.extractText(40) : '';
+
       if (lesson.id === 'd7' && window.DAY7_QUIZ) {
         setThinking(`Đang tải đề trắc nghiệm lưu sẵn cho Day 7…`);
         const qs = [...window.DAY7_QUIZ.questions].sort(() => Math.random() - 0.5);
@@ -215,7 +218,7 @@ Trả về DUY NHẤT JSON đúng định dạng sau, không kèm bất kỳ ch�
           if (attempt > 0) setThinking(`Đã lọc ${dropped} câu trùng — đang xin thêm ${need} câu mới…`);
 
           const raw = await AIEngine.callAI(
-            buildPrompt(lesson, need, excludedText.concat(collected.map(q => q.question)), attempt),
+            buildPrompt(lesson, need, excludedText.concat(collected.map(q => q.question)), attempt, pdfText),
             'Bạn là giảng viên AICB ra đề trắc nghiệm chất lượng cao. Chỉ trả về JSON đúng định dạng, không giải thích thêm.',
             { temperature: 0.95, maxTokens: Math.min(1200 + need * 400, 4000) }
           );
