@@ -94,7 +94,7 @@ Vẫn phải có ít nhất 2 câu dạng code_output để kiểm tra khả nă
       ? `\nCÁC CÂU ĐÃ RA TRƯỚC ĐÓ — TUYỆT ĐỐI KHÔNG LẶP LẠI Ý CỦA BẤT KỲ CÂU NÀO:\n` +
         excluded.slice(0, 40).map((q, i) => `${i + 1}. ${q.slice(0, 110)}`).join('\n') + '\n'
       : '';
-
+    const lengthLimits = '\nGIỚI HẠN ĐỘ DÀI: question tối đa 45 từ; code tối đa 12 dòng; mỗi option tối đa 22 từ; explanation tối đa 70 từ.\n';
     const picked = [...ANGLES].sort(() => Math.random() - 0.5).slice(0, 3);
     const nonce = Math.random().toString(36).slice(2, 8);
 
@@ -108,7 +108,7 @@ ${STYLE_INSTR[prefs.style] || STYLE_INSTR.mixed}
 
 GÓC TIẾP CẬN CHO LẦN NÀY (mã đề ${nonce}${attempt ? `, lượt bổ sung ${attempt + 1}` : ''}) — hãy bám vào các góc này để đề khác hẳn những lần trước:
 ${picked.map(a => `- ${a}`).join('\n')}
-${exclude}
+${exclude}${lengthLimits}
 QUY TẮC BẮT BUỘC:
 1. Câu hỏi phải CỤ THỂ và kiểm tra hiểu sâu. NGHIÊM CẤM các câu chung chung như "X là gì?",
    "Đâu là định nghĩa của X?", "X dùng để làm gì?", "Ưu điểm của X là gì?".
@@ -217,10 +217,26 @@ Trả về DUY NHẤT JSON đúng định dạng sau, không kèm bất kỳ ch�
           const raw = await AIEngine.callAI(
             buildPrompt(lesson, need, excludedText.concat(collected.map(q => q.question)), attempt),
             'Bạn là giảng viên AICB ra đề trắc nghiệm chất lượng cao. Chỉ trả về JSON đúng định dạng, không giải thích thêm.',
-            { temperature: 0.95, maxTokens: Math.min(1200 + need * 400, 4000) }
+            {
+              temperature: 0.8,
+              maxTokens: Math.min(1800 + need * 340, 8600),
+              jsonMode: true,
+              retries: 1
+            }
           );
 
-          for (const rawQ of parseQuestions(raw)) {
+          let generated;
+          try {
+            generated = parseQuestions(raw);
+          } catch (error) {
+            if (attempt === 0) {
+              setThinking('Phản hồi chưa đúng định dạng, đang thử lại…');
+              continue;
+            }
+            throw error;
+          }
+
+          for (const rawQ of generated) {
             const q = normalize(rawQ);
             if (!q) continue;
             const fp = fingerprint(q);

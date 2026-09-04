@@ -7,6 +7,8 @@
 const AIEngine = (() => {
   const HIST_KEY = 'aicb_summary_hist_v2';
   const CODE_KEY = 'aicb_code_v1';
+  const REQUEST_TIMEOUT_MS = 75_000;
+  const DEFAULT_RETRIES = 1;
   const $ = id => document.getElementById(id);
 
   const LEVEL_LABEL = { simple: 'Đơn giản', standard: 'Chuẩn', deep: 'Chuyên sâu' };
@@ -27,27 +29,122 @@ const AIEngine = (() => {
   }
 
   // ─── API ─────────────────────────────────────────────────
+  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+  function apiError(message, { status, retryAfterMs, retryable = false, cause } = {}) {
+    const error = new Error(message);
+    error.status = status;
+    error.retryAfterMs = retryAfterMs;
+    error.retryable = retryable;
+    error.cause = cause;
+    return error;
+  }
+
+  function getRetryAfterMs(response) {
+    const value = response.headers.get('Retry-After');
+    if (!value) return 0;
+    const seconds = Number(value);
+    if (Number.isFinite(seconds)) return Math.max(0, seconds * 1000);
+    const dateMs = Date.parse(value);
+    return Number.isNaN(dateMs) ? 0 : Math.max(0, dateMs - Date.now());
+  }
+
+  async function readErrorMessage(response) {
+    const body = await response.text().catch(() => '');
+    if (!body) return `HTTP ${response.status}`;
+    try {
+      const data = JSON.parse(body);
+      return data.error?.message || data.message || `HTTP ${response.status}`;
+    } catch {
+      return `HTTP ${response.status}`;
+    }
+  }
+
+  async function requestChat(url, apiKey, payload, timeoutMs) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
+
+      if (!response.ok) {
+        const status = response.status;
+        throw apiError(await readErrorMessage(response), {
+          status,
+          retryAfterMs: getRetryAfterMs(response),
+          retryable: status === 408 || status === 409 || status === 425 || status === 429 || status >= 500
+        });
+      }
+
+      const body = await response.text();
+      try {
+        return JSON.parse(body);
+      } catch (cause) {
+        throw apiError('Máy chủ AI trả về dữ liệu không hợp lệ. Hãy thử lại.', { retryable: true, cause });
+      }
+    } catch (error) {
+      if (error?.name === 'AbortError' || controller.signal.aborted) {
+        throw apiError(`AI phản hồi quá ${Math.round(timeoutMs / 1000)} giây. Vui lòng thử lại.`, { cause: error });
+      }
+      if (error?.status || error?.retryable !== undefined) throw error;
+      throw apiError('Không kết nối được tới máy chủ AI. Kiểm tra mạng hoặc Base URL rồi thử lại.', { retryable: true, cause: error });
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   /** Gọi endpoint chat/completions với danh sách message đầy đủ (giữ ngữ cảnh nhiều lượt). */
-  async function chat(messages, { temperature = 0.7, maxTokens = 2000 } = {}) {
+  async function chat(messages, {
+    temperature = 0.7,
+    maxTokens = 2000,
+    jsonMode = false,
+    timeoutMs = REQUEST_TIMEOUT_MS,
+    retries = DEFAULT_RETRIES
+  } = {}) {
     const { apiKey, baseUrl, model } = App.getSettings();
     if (!apiKey) throw new Error('no_api_key');
 
     const url = (baseUrl || 'https://api.shopaikey.com/v1').replace(/\/+$/, '') + '/chat/completions';
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-      body: JSON.stringify({ model: model || 'gpt-5.6-luna', messages, temperature, max_tokens: maxTokens })
-    });
+    const retryCount = Math.max(0, Math.min(Number(retries) || 0, 2));
+    let useJsonMode = jsonMode;
 
-    if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err.error?.message || `HTTP ${resp.status}`);
+    for (let attempt = 0; attempt <= retryCount; attempt++) {
+      const payload = { model: model || 'gpt-5.6-luna', messages, temperature, max_tokens: maxTokens };
+      if (useJsonMode) payload.response_format = { type: 'json_object' };
+
+      try {
+        const data = await requestChat(url, apiKey, payload, timeoutMs);
+        const choice = data.choices?.[0];
+        const content = choice?.message?.content;
+        if (choice?.finish_reason === 'length') {
+          throw apiError('Phản hồi AI bị cắt do vượt giới hạn độ dài. Hãy giảm số câu rồi thử lại.');
+        }
+        if (typeof content !== 'string' || !content.trim()) {
+          throw apiError('Máy chủ AI không trả về nội dung hợp lệ. Hãy thử lại.', { retryable: true });
+        }
+        return App.clean(content);
+      } catch (error) {
+        // Fallback for OpenAI-compatible endpoints that do not support JSON mode.
+        const jsonModeUnsupported = useJsonMode && error.status === 400 && /response[_ -]?format|json[_ -]?object|json mode/i.test(error.message || '');
+        if (jsonModeUnsupported) {
+          useJsonMode = false;
+          attempt--;
+          continue;
+        }
+
+        if (!error.retryable || attempt === retryCount) throw error;
+        const backoff = error.retryAfterMs || (800 * (attempt + 1) + Math.floor(Math.random() * 300));
+        await sleep(Math.min(backoff, 8_000));
+      }
     }
-    const data = await resp.json();
-    // Loại emoji ngay tại nguồn: áp dụng cho tóm tắt, quiz, tự luận, flashcard, code và chatbot
-    return App.clean(data.choices?.[0]?.message?.content || '');
-  }
 
+    throw apiError('Không thể gọi máy chủ AI. Hãy thử lại.');
+  }
   /** Gọi AI với một prompt đơn. opts: { temperature, maxTokens } */
   function callAI(prompt, systemPrompt = '', opts) {
     const messages = [];
