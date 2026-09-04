@@ -53,6 +53,18 @@ TUYỆT ĐỐI KHÔNG tạo code_output hoặc code_debug; không được có �
     'so sánh hai phương án và chọn phương án phù hợp với ràng buộc cho trước'
   ];
 
+  // Chỉ dùng khi chọn “Thiên về lý thuyết”; không có góc tiếp cận code/log/debug.
+  const THEORY_ANGLES = [
+    'phân biệt các khái niệm dễ bị nhầm lẫn',
+    'so sánh hai phương án theo tiêu chí đã cho',
+    'phân tích quan hệ nguyên nhân và hệ quả',
+    'chọn nguyên tắc hoặc chiến lược phù hợp cho tình huống',
+    'xác định thứ tự đúng của các bước trong một quy trình',
+    'đánh giá đánh đổi giữa chi phí, độ trễ và chất lượng',
+    'nhận diện giả định, rủi ro hoặc hiểu nhầm phổ biến',
+    'suy luận từ một tình huống thực tế không có code'
+  ];
+
   // ─── Lịch sử ─────────────────────────────────────────────
   const loadHistory = () => { try { return JSON.parse(localStorage.getItem(HIST_KEY) || '{}'); } catch { return {}; } };
   const saveHistory = h => localStorage.setItem(HIST_KEY, JSON.stringify(h));
@@ -95,7 +107,8 @@ TUYỆT ĐỐI KHÔNG tạo code_output hoặc code_debug; không được có �
         excluded.slice(0, 40).map((q, i) => `${i + 1}. ${q.slice(0, 110)}`).join('\n') + '\n'
       : '';
     const lengthLimits = '\nGIỚI HẠN ĐỘ DÀI: question tối đa 45 từ; code tối đa 12 dòng; mỗi option tối đa 22 từ; explanation tối đa 70 từ.\n';
-    const picked = [...ANGLES].sort(() => Math.random() - 0.5).slice(0, 3);
+    const anglePool = prefs.style === 'theory' ? THEORY_ANGLES : ANGLES;
+    const picked = [...anglePool].sort(() => Math.random() - 0.5).slice(0, 3);
     const nonce = Math.random().toString(36).slice(2, 8);
 
     return `Tạo ${need} câu hỏi trắc nghiệm cho bài học "${lesson.title}".
